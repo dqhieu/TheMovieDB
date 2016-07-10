@@ -159,17 +159,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         let imgView = cell.imgViewPhoto
         if let posterPath = movie["poster_path"] as? String {
-            let lowResBaseUrl = "https://image.tmdb.org/t/p/w45"
             let mediumResBaseUrl = "https://image.tmdb.org/t/p/w342"
             let highResBaseUrl = "https://image.tmdb.org/t/p/original"
             let posterUrl = NSURL(string: mediumResBaseUrl + posterPath)
-            cell.imgViewPhoto.setImageWithURLRequest(NSURLRequest(URL: posterUrl!), placeholderImage: nil, success: { (request, respone, image) in
+            cell.imgViewPhoto.setImageWithURLRequest(NSURLRequest(URL: posterUrl!), placeholderImage: nil, success: { (request, respone, mediumResimage) in
                 imgView.alpha = 0.0
-                imgView.image = image
+                imgView.image = mediumResimage
                 UIView.animateWithDuration(0.5, animations: {
-                    imgView.alpha = 1
+                    imgView.alpha = 1.0
+                    }, completion: { (success) in
+                        imgView.setImageWithURLRequest(NSURLRequest(URL: NSURL(string: highResBaseUrl + posterPath)!), placeholderImage: mediumResimage, success: { (req, resp, highResImage) in
+                            imgView.image = highResImage
+                            }, failure: nil)
+
                 })
-                }, failure: nil)
+            }, failure: nil)
         }
         else {
             cell.imgViewPhoto.image = nil
