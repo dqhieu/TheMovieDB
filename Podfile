@@ -7,5 +7,5 @@ target 'TheMovieDB' do
 
   # Pods for TheMovieDB
   pod 'AFNetworking', '~> 3.0'
-
+  pod 'MBProgressHUD', '~> 0.9.2'
 end

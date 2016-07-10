@@ -8,10 +8,16 @@
 
 import UIKit
 import AFNetworking
+import MBProgressHUD
 
-class MovieTableViewController: UITableViewController, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate {
+class MovieViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate {
 
+    
+    @IBOutlet weak var tableView: UITableView!
+    
     var searchController:UISearchController!
+    var refreshControl = UIRefreshControl()
+    var loadingNotification:MBProgressHUD!
     
     var movies = [NSDictionary]()
     var filteredMovies = [NSDictionary]()
@@ -19,26 +25,30 @@ class MovieTableViewController: UITableViewController, UISearchControllerDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        tableView.delegate = self
+        tableView.dataSource = self
         
         initRefreshControl()
         initSearchBar()
+        showLoadingNotification()
         loadData()
+        
+    }
+    
+    func showLoadingNotification() {
+        loadingNotification = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        loadingNotification.mode = MBProgressHUDMode.Indeterminate
+        loadingNotification.labelText = "Loading"
     }
     
     func initRefreshControl() {
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(MovieTableViewController.loadData), forControlEvents: UIControlEvents.ValueChanged)
-        self.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(MovieViewController.loadData), forControlEvents: UIControlEvents.ValueChanged)
+        tableView.insertSubview(refreshControl, atIndex: 0)
+
     }
     
     func initSearchBar() {
-        self.navigationController!.navigationBar.barTintColor = UIColor(red: <#T##CGFloat#>, green: <#T##CGFloat#>, blue: <#T##CGFloat#>, alpha: <#T##CGFloat#>)
+        //self.navigationController!.navigationBar.barTintColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0)
         self.searchController = UISearchController(searchResultsController:  nil)
         self.searchController.searchResultsUpdater = self
         self.searchController.searchBar.delegate = self
@@ -49,8 +59,20 @@ class MovieTableViewController: UITableViewController, UISearchControllerDelegat
 
     }
     
+    
     func loadData() {
-        self.refreshControl?.beginRefreshing()
+        
+        if !Reachability.isConnectedToNetwork() {
+            let alert = UIAlertController(title: "No internet connection", message: nil, preferredStyle: .Alert)
+            let actionOk = UIAlertAction(title: "OK", style: .Default, handler: nil)
+            alert.addAction(actionOk)
+            MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+            self.refreshControl.endRefreshing()
+            presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        
+        
         movies.removeAll()
         
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
@@ -74,7 +96,8 @@ class MovieTableViewController: UITableViewController, UISearchControllerDelegat
                                                                                 //print("response: \(responseDictionary)")
                                                                                 self.movies = responseDictionary["results"] as! [NSDictionary]
                                                                                 self.tableView.reloadData()
-                                                                                self.refreshControl?.endRefreshing()
+                                                                                self.refreshControl.endRefreshing()
+                                                                                MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
                                                                             }
                                                                         }
         })
@@ -91,12 +114,12 @@ class MovieTableViewController: UITableViewController, UISearchControllerDelegat
 
     
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         if searchController.active && searchController.searchBar.text != "" {
             return filteredMovies.count
@@ -105,7 +128,7 @@ class MovieTableViewController: UITableViewController, UISearchControllerDelegat
     }
 
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell") as! MovieCell
         
         var movie:NSDictionary
@@ -119,20 +142,25 @@ class MovieTableViewController: UITableViewController, UISearchControllerDelegat
         
         cell.lblTitle.text = movie["title"] as? String
         cell.lblOverview.text = movie["overview"] as? String
+        let imgView = cell.imgViewPoster
         if let posterPath = movie["poster_path"] as? String {
-            let posterBaseUrl = "https://image.tmdb.org/t/p/w500"
-            let posterUrl = NSURL(string: posterBaseUrl + posterPath)
-            cell.imgViewPoster.setImageWithURL(posterUrl!)
+            let lowResBaseUrl = "https://image.tmdb.org/t/p/w45"
+            let highResBaseUrl = "https://image.tmdb.org/t/p/original"
+            let posterUrl = NSURL(string: highResBaseUrl + posterPath)
+            cell.imgViewPoster.setImageWithURLRequest(NSURLRequest(URL: posterUrl!), placeholderImage: nil, success: { (request, respone, image) in
+                    imgView.alpha = 0.0
+                    imgView.image = image
+                    UIView.animateWithDuration(0.5, animations: {
+                        imgView.alpha = 1
+                    })
+                    //imgView.setImageWithURL(NSURL(string: highResBaseUrl + posterPath)!, placeholderImage: image)
+                }, failure: nil)
         }
         else {
             cell.imgViewPoster.image = nil
         }
         
         return cell
-    }
-    
-    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-        
     }
     
     func updateSearchResultsForSearchController(searchController: UISearchController) {
