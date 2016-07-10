@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AFNetworking
 import MBProgressHUD
 
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate  {
@@ -56,9 +57,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        //self.navigationController!.navigationBar.barTintColor = UIColor(hue: 151, saturation: 100, brightness: 17, alpha: 1)
         self.navigationController!.navigationBar.barTintColor = UIColor(patternImage: UIImage(named: "bar.png")!)
-        // Do any additional setup after loading the view.
         setupInitialLayout()
         initSearchBar()
         initRefreshControl()
@@ -69,7 +68,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     func showLoadingNotification() {
         loadingNotification = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
-        loadingNotification.mode = MBProgressHUDMode.AnnularDeterminate
+        loadingNotification.mode = MBProgressHUDMode.Indeterminate
         loadingNotification.labelText = "Loading"
     }
     
@@ -79,13 +78,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func initRefreshControl() {
-        refreshControl.addTarget(self, action: #selector(MovieViewController.loadData), forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl.addTarget(self, action: #selector(ViewController.loadData), forControlEvents: UIControlEvents.ValueChanged)
         collectionView.insertSubview(refreshControl, atIndex: 0)
         
     }
     
     func initSearchBar() {
-        //self.navigationController!.navigationBar.barTintColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0)
         self.searchController = UISearchController(searchResultsController:  nil)
         self.searchController.searchResultsUpdater = self
         self.searchController.searchBar.delegate = self
@@ -97,9 +95,18 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func loadData() {
+        
+        if !Reachability.isConnectedToNetwork() {
+            let alert = UIAlertController(title: "No internet connection", message: nil, preferredStyle: .Alert)
+            let actionOk = UIAlertAction(title: "OK", style: .Default, handler: nil)
+            alert.addAction(actionOk)
+            MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+            self.refreshControl.endRefreshing()
+            presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        
         movies.removeAll()
-        
-        
         
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = NSURL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
@@ -128,8 +135,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         task.resume()
 
     }
-    
-    
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if searchController.active && searchController.searchBar.text != "" {
