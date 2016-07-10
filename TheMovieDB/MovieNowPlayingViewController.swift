@@ -10,7 +10,7 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate  {
+class MovieNowPlayingViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate  {
 
     
     
@@ -22,7 +22,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     var isGridFlowLayoutUsed: Bool = false
     var searchController:UISearchController!
     var refreshControl = UIRefreshControl()
-    var loadingNotification:MBProgressHUD!
     
     var movies = [NSDictionary]()
     var filteredMovies = [NSDictionary]()
@@ -67,7 +66,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func showLoadingNotification() {
-        loadingNotification = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        var loadingNotification = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         loadingNotification.mode = MBProgressHUDMode.Indeterminate
         loadingNotification.labelText = "Loading"
     }
@@ -78,7 +77,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func initRefreshControl() {
-        refreshControl.addTarget(self, action: #selector(ViewController.loadData), forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl.addTarget(self, action: #selector(MovieNowPlayingViewController.loadData), forControlEvents: UIControlEvents.ValueChanged)
         collectionView.insertSubview(refreshControl, atIndex: 0)
         
     }
@@ -184,6 +183,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
     }
     
+    
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         filterContentForSearchText(searchController.searchBar.text!)
     }
@@ -196,14 +196,26 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         collectionView.reloadData()
     }
     
-    /*
+    
+    
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "segueDetail" {
+            let vc = segue.destinationViewController as! MovieDetailViewController
+            let indexPath = collectionView.indexPathForCell(sender as! UICollectionViewCell)
+            var movie:NSDictionary
+            if searchController.active && searchController.searchBar.text != "" {
+                movie = filteredMovies[indexPath!.row]
+            } else {
+                movie = movies[indexPath!.row]
+            }
+            vc.movieID = movie["id"] as! Int
+        }
+        
     }
-    */
+    
 
 }

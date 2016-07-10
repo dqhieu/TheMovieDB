@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Movie Now Playing View Controller-->
         <scene sceneID="BZf-hK-WSK">
             <objects>
-                <viewController id="ULq-5z-kD4" customClass="ViewController" customModule="TheMovieDB" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="ULq-5z-kD4" customClass="MovieNowPlayingViewController" customModule="TheMovieDB" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="E6j-Nl-qqM"/>
                         <viewControllerLayoutGuide type="bottom" id="Ich-1r-Elv"/>
@@ -84,6 +84,7 @@
                                             <outlet property="imgViewPhoto" destination="X6j-dv-Dt7" id="Epk-Dt-5Fq"/>
                                             <outlet property="lblName" destination="tDa-hp-ofp" id="IcA-Re-BUN"/>
                                             <outlet property="lblRating" destination="758-gi-Cel" id="fwJ-YB-4HE"/>
+                                            <segue destination="mfj-Ww-NBW" kind="push" identifier="segueDetail" id="8m2-3Z-QCl"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -111,7 +112,103 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GHz-HG-48g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3797.5" y="392.5"/>
+            <point key="canvasLocation" x="3135.5" y="397.5"/>
+        </scene>
+        <!--Movie Detail View Controller-->
+        <scene sceneID="QPJ-E5-gK9">
+            <objects>
+                <viewController id="mfj-Ww-NBW" customClass="MovieDetailViewController" customModule="TheMovieDB" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="8WX-HG-yLF"/>
+                        <viewControllerLayoutGuide type="bottom" id="M4t-q2-GlO"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="nkP-0T-1Eu">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="JRH-Qk-M5j">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                            </imageView>
+                            <view clipsSubviews="YES" clearsContextBeforeDrawing="NO" alpha="0.80000000000000004" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vjq-Ze-UN2">
+                                <rect key="frame" x="8" y="627" width="359" height="1000"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dew-y2-TS8" userLabel="Lbl name">
+                                        <rect key="frame" x="20" y="8" width="319" height="27"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kFg-fv-SeW" userLabel="Lbl date">
+                                        <rect key="frame" x="20" y="43" width="319" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="time.png" translatesAutoresizingMaskIntoConstraints="NO" id="0dV-5p-U4E">
+                                        <rect key="frame" x="20" y="72" width="24" height="24"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rating.png" translatesAutoresizingMaskIntoConstraints="NO" id="boz-QN-KT5">
+                                        <rect key="frame" x="261" y="73" width="24" height="24"/>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GOf-l3-DYy" userLabel="Lbl rating">
+                                        <rect key="frame" x="293" y="74" width="42" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WlE-kT-ekf" userLabel="Lbl Duration">
+                                        <rect key="frame" x="52" y="73" width="98" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="justified" lineBreakMode="tailTruncation" numberOfLines="20" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AIP-Dz-0tE" userLabel="Lbl overview">
+                                        <rect key="frame" x="20" y="114" width="319" height="63"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sJv-o4-MS3" customClass="YTPlayerView">
+                                        <rect key="frame" x="20" y="178" width="319" height="180"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" red="0.29803922770000002" green="0.29803922770000002" blue="0.29803922770000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="utS-fU-FiU" appends="YES" id="lpP-3D-gC0"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="JRH-Qk-M5j" secondAttribute="bottom" id="0Vm-bq-jL7"/>
+                            <constraint firstItem="JRH-Qk-M5j" firstAttribute="leading" secondItem="nkP-0T-1Eu" secondAttribute="leading" id="14B-Qy-g8U"/>
+                            <constraint firstItem="JRH-Qk-M5j" firstAttribute="top" secondItem="8WX-HG-yLF" secondAttribute="bottom" id="5mo-5Q-WdN"/>
+                            <constraint firstAttribute="trailing" secondItem="JRH-Qk-M5j" secondAttribute="trailing" id="eTO-NP-Aza"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="CZ2-0E-M8T"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="containView" destination="vjq-Ze-UN2" id="xyC-TY-QjP"/>
+                        <outlet property="imgViewPhoto" destination="JRH-Qk-M5j" id="glH-vY-KG7"/>
+                        <outlet property="lblDate" destination="kFg-fv-SeW" id="OMT-Oh-NG1"/>
+                        <outlet property="lblDuration" destination="WlE-kT-ekf" id="QyQ-Yl-UOz"/>
+                        <outlet property="lblName" destination="Dew-y2-TS8" id="luO-xS-Lh9"/>
+                        <outlet property="lblOverview" destination="AIP-Dz-0tE" id="Uqu-AC-nS7"/>
+                        <outlet property="lblRating" destination="GOf-l3-DYy" id="6yB-xJ-41z"/>
+                        <outlet property="playerView" destination="sJv-o4-MS3" id="ZtV-hR-2hW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qHE-wy-1z8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="utS-fU-FiU">
+                    <connections>
+                        <action selector="onPanGesture:" destination="mfj-Ww-NBW" id="TAe-Jv-gnX"/>
+                    </connections>
+                </panGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="3672.5" y="397.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Vg9-5M-suZ">
@@ -130,12 +227,16 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pid-Rv-vCc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3265" y="392"/>
+            <point key="canvasLocation" x="2602.5" y="396.5"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="fkk-8c-I61">
             <objects>
                 <viewController id="oio-cG-hOf" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="CsK-Bh-vo1"/>
+                        <viewControllerLayoutGuide type="bottom" id="ohh-0Z-fvJ"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="gPT-CH-V7R">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -148,5 +249,7 @@
     </scenes>
     <resources>
         <image name="horizontal_list_view.png" width="24" height="24"/>
+        <image name="rating.png" width="540" height="540"/>
+        <image name="time.png" width="446" height="446"/>
     </resources>
 </document>

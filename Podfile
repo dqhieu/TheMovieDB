@@ -8,4 +8,5 @@ target 'TheMovieDB' do
   # Pods for TheMovieDB
   pod 'AFNetworking', '~> 3.0'
   pod 'MBProgressHUD', '~> 0.9.2'
+  pod 'youtube-ios-player-helper', '~> 0.1.4'
 end
